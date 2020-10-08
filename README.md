@@ -43,3 +43,9 @@ Options:
   -i, --init-baudrate <baudrate>  Initial baudrate of Nextion device (if
                                   different than upload baudrate.
 ```
+
+## Getting your file
+
+Tool requires you to provide generated TFT firmware ("compiled"), not the HMI file that can be edited in Nextion Editor. To get the TFT out of your HMI, navigate to File -> TFT Output in your Nextion Editor and press Generate.
+
+If you know any other way to generate TFTs, let me know :)
