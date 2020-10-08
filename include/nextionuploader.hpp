@@ -16,7 +16,7 @@ public:
 
 private:
     QSerialPort serial;
-    QString serialName;
+    QString serialPortName;
     qint32 serialUploadBaudrate;
     qint32 serialInitBaudrate;
     QByteArray firmware;

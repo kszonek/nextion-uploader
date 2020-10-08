@@ -7,7 +7,7 @@
 NextionUploader::NextionUploader(QString &port, qint32 baudrate, qint32 ibaudrate, QObject *parent) :
     QObject(parent),
     serial(this),
-    serialName(port),
+    serialPortName(port),
     serialUploadBaudrate(baudrate),
     serialInitBaudrate(ibaudrate)
 {
@@ -63,7 +63,7 @@ QByteArray NextionUploader::waitForResponse(const int timeout)
 void NextionUploader::run()
 {
     qDebug() << "Uploading firmware to serial port";
-    serial.setPortName(serialName);
+    serial.setPortName(serialPortName);
     serial.setBaudRate(serialInitBaudrate);
     serial.open(QSerialPort::ReadWrite);
     if(!serial.isOpen() || !serial.isWritable())
