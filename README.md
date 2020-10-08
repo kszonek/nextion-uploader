@@ -3,7 +3,7 @@ Command line tool to upload TFT firmware to ITEAD Nextion HMI.
 
 ## Building
 
-Project uses QT and cmake, can be build in QTCreator or from command line.
+Project is written in QT5 and uses cmake, can be build in QTCreator or from command line.
 
 ### Linux
 
