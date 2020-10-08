@@ -12,8 +12,17 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5Core)
+find_package(Qt5SerialPort)
+
+include_directories(include/)
 
 add_executable(nextion-uploader
-  main.cpp
-)
-target_link_libraries(nextion-uploader Qt5::Core)
+
+    include/nextionuploader.hpp
+
+    src/main.cpp
+    src/nextionuploader.cpp
+    )
+target_link_libraries(nextion-uploader
+    Qt5::Core
+    Qt5::SerialPort)
