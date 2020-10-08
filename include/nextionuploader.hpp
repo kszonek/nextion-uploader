@@ -9,7 +9,7 @@ class NextionUploader : public QObject
 {
     Q_OBJECT
 public:
-    explicit NextionUploader(QString &port, qint32 baudrate, QObject *parent = nullptr);
+    explicit NextionUploader(QString &port, qint32 baudrate, qint32 ibauudrate, QObject *parent = nullptr);
 
     int connectSerial();
     int loadFirmwareFile(const QString &filename);
@@ -17,7 +17,8 @@ public:
 private:
     QSerialPort *serial;
     QString serialName;
-    qint32 serialBaudrate;
+    qint32 serialUploadBaudrate;
+    qint32 serialInitBaudrate;
     QByteArray firmware;
 
     void sendCommand(const QByteArray &cmd);

@@ -4,10 +4,11 @@
 #include <QFile>
 #include <QThread>
 
-NextionUploader::NextionUploader(QString &port, qint32 baudrate, QObject *parent) :
+NextionUploader::NextionUploader(QString &port, qint32 baudrate, qint32 ibaudrate, QObject *parent) :
     QObject(parent),
     serialName(port),
-    serialBaudrate(baudrate)
+    serialUploadBaudrate(baudrate),
+    serialInitBaudrate(ibaudrate)
 {
 }
 
@@ -62,7 +63,7 @@ void NextionUploader::run()
 {
     qDebug() << "Uploading firmware to serial port";
     serial = new QSerialPort(serialName);
-    serial->setBaudRate(serialBaudrate);
+    serial->setBaudRate(serialInitBaudrate);
     serial->open(QSerialPort::ReadWrite);
     if(!serial->isOpen() || !serial->isWritable())
     {
@@ -82,19 +83,18 @@ void NextionUploader::run()
     QByteArray whmi_wri = "whmi-wri ";
     whmi_wri += QString::number(firmware.size());
     whmi_wri += ",";
-    whmi_wri += QString::number(serial->baudRate());
+    whmi_wri += QString::number(serialUploadBaudrate);
     whmi_wri += ",0";
     sendCommand(whmi_wri);
     waitForResponse(2000);   // 0x05
 
-//    serial->close();
-//    serial->setBaudRate(115200);
-//    serial->open(QSerialPort::ReadWrite);
-
-//    QThread::msleep(100000000);
-//    serial->readAll();
-
-    QThread::sleep(2);
+    if(serialInitBaudrate != serialUploadBaudrate)
+    {
+        serial->close();
+        serial->setBaudRate(serialUploadBaudrate);
+        serial->open(QSerialPort::ReadWrite);
+        QThread::sleep(2);
+    }
 
     qDebug() << "Sending firmware...";
     while(firmware.size())
@@ -107,5 +107,6 @@ void NextionUploader::run()
         waitForResponse(1000);
     }
     qDebug() << "Firmware flashed";
+    serial->close();
     emit finished();
 }

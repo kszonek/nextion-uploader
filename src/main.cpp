@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
                           {{"b", "baudrate"},
                            QCoreApplication::translate("main", "Baudrate to upload firmware with."),
                            QCoreApplication::translate("main", "baudrate")},
+                          {{"i", "init-baudrate"},
+                           QCoreApplication::translate("main", "Initial baudrate of Nextion device (if different than upload baudrate."),
+                           QCoreApplication::translate("main", "baudrate")},
                       });
 
     parser.process(a);
@@ -36,7 +39,8 @@ int main(int argc, char *argv[])
         parser.showHelp(-1);
     }
     QString port = parser.isSet("port") ? parser.value("port") : "/dev/ttyUSB0";
-    int baudrate = parser.isSet("baudrate") ? parser.value("baudrate").toUInt() : 115200;
+    qint32 baudrate = parser.isSet("baudrate") ? parser.value("baudrate").toUInt() : 115200;
+    qint32 ibaudrate = parser.isSet("init-baudrate") ? parser.value("init-baudrate").toUInt() : baudrate;
     QString firmware(parser.value("firmware"));
 
     if(!QFile::exists(firmware))
@@ -45,7 +49,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    NextionUploader *nex = new NextionUploader(port,baudrate);
+    NextionUploader *nex = new NextionUploader(port,baudrate,ibaudrate);
 
     if(int ret = nex->loadFirmwareFile(firmware))
     {
