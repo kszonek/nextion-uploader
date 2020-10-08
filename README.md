@@ -22,7 +22,7 @@ Never tested, but if you made it work, please submit PR or create Issue with not
 
 Never tested, but if you made it work, please submit PR or create Issue with notes.
 
-## Running
+## Usage
 
 Tool allows to choose different baudrate settings for connecting with HMI display (Nextion default is 9600) and for uploading the firmware.
 
