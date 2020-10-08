@@ -15,7 +15,7 @@ public:
     int loadFirmwareFile(const QString &filename);
 
 private:
-    QSerialPort *serial;
+    QSerialPort serial;
     QString serialName;
     qint32 serialUploadBaudrate;
     qint32 serialInitBaudrate;

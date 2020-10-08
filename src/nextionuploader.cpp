@@ -6,6 +6,7 @@
 
 NextionUploader::NextionUploader(QString &port, qint32 baudrate, qint32 ibaudrate, QObject *parent) :
     QObject(parent),
+    serial(this),
     serialName(port),
     serialUploadBaudrate(baudrate),
     serialInitBaudrate(ibaudrate)
@@ -33,19 +34,19 @@ int NextionUploader::loadFirmwareFile(const QString &filename)
 
 void NextionUploader::sendCommand(const QByteArray &cmd)
 {
-    serial->write(cmd);
-    serial->write(QByteArray(3,0xFF));
+    serial.write(cmd);
+    serial.write(QByteArray(3,0xFF));
 }
 
 QByteArray NextionUploader::waitForResponse(const int timeout)
 {
     QByteArray incomming;
-    serial->waitForReadyRead(timeout);
-    if(serial->bytesAvailable())
+    serial.waitForReadyRead(timeout);
+    if(serial.bytesAvailable())
     {
         do
-            incomming += serial->readAll();
-        while(serial->waitForReadyRead(25));
+            incomming += serial.readAll();
+        while(serial.waitForReadyRead(25));
     }
     if(incomming.size() == 0)
     {
@@ -62,12 +63,12 @@ QByteArray NextionUploader::waitForResponse(const int timeout)
 void NextionUploader::run()
 {
     qDebug() << "Uploading firmware to serial port";
-    serial = new QSerialPort(serialName);
-    serial->setBaudRate(serialInitBaudrate);
-    serial->open(QSerialPort::ReadWrite);
-    if(!serial->isOpen() || !serial->isWritable())
+    serial.setPortName(serialName);
+    serial.setBaudRate(serialInitBaudrate);
+    serial.open(QSerialPort::ReadWrite);
+    if(!serial.isOpen() || !serial.isWritable())
     {
-        qCritical() << "Unable to open serial port" << serial->portName();
+        qCritical() << "Unable to open serial port" << serial.portName();
         emit finished();
         return;
     }
@@ -90,9 +91,9 @@ void NextionUploader::run()
 
     if(serialInitBaudrate != serialUploadBaudrate)
     {
-        serial->close();
-        serial->setBaudRate(serialUploadBaudrate);
-        serial->open(QSerialPort::ReadWrite);
+        serial.close();
+        serial.setBaudRate(serialUploadBaudrate);
+        serial.open(QSerialPort::ReadWrite);
         QThread::sleep(2);
     }
 
@@ -101,12 +102,12 @@ void NextionUploader::run()
     {
         qDebug() << "Remaing data to send: " << firmware.size();
         QByteArray chunk = firmware.left(4096);
-        serial->write(chunk);
-        serial->waitForBytesWritten();
+        serial.write(chunk);
+        serial.waitForBytesWritten();
         firmware.remove(0,chunk.size());
         waitForResponse(1000);
     }
     qDebug() << "Firmware flashed";
-    serial->close();
+    serial.close();
     emit finished();
 }
