@@ -3,7 +3,7 @@
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QFile>
-#include <QThread>
+#include <QTimer>
 
 #include "nextionuploader.hpp"
 
@@ -56,14 +56,8 @@ int main(int argc, char *argv[])
         return ret;
     }
 
-    QThread *nextionThread = new QThread();
-    nex->moveToThread(nextionThread);
-    QObject::connect(nextionThread, &QThread::started, nex, &NextionUploader::run);
-    QObject::connect(nex, &NextionUploader::finished, nextionThread, &QThread::quit);
-    QObject::connect(nex, &NextionUploader::finished, nex, &QObject::deleteLater);
-    QObject::connect(nextionThread, &QThread::finished, nextionThread, &QObject::deleteLater);
-    QObject::connect(nextionThread, &QThread::finished, &a, QCoreApplication::quit);
-    nextionThread->start();
+    QObject::connect(nex, &NextionUploader::finished, &a, &QCoreApplication::quit);
+    QTimer::singleShot(0, nex, &NextionUploader::run);
 
     return a.exec();
 }
