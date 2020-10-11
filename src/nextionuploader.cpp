@@ -29,6 +29,7 @@ int NextionUploader::loadFirmwareFile(const QString &filename)
     }
     firmware = file.readAll();
     file.close();
+    firmwareSize = firmware.size();
     return 0;
 }
 
@@ -55,7 +56,6 @@ QByteArray NextionUploader::waitForResponse(const int timeout)
     }
     else
     {
-        qDebug() << "Data read: " << incomming;
         return incomming;
     }
 }
@@ -100,7 +100,9 @@ void NextionUploader::run()
     qDebug() << "Sending firmware...";
     while(firmware.size())
     {
-        qDebug() << "Remaing data to send: " << firmware.size();
+        qDebug().noquote().nospace()
+                << "Remaing data: " << firmware.size()
+                << " bytes (" << QString::number(100.-100.*firmware.size()/firmwareSize,'f',2) << "%)";
         QByteArray chunk = firmware.left(4096);
         serial.write(chunk);
         serial.waitForBytesWritten();

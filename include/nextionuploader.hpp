@@ -19,7 +19,9 @@ private:
     QString serialPortName;
     qint32 serialUploadBaudrate;
     qint32 serialInitBaudrate;
+
     QByteArray firmware;
+    qint64 firmwareSize;
 
     void sendCommand(const QByteArray &cmd);
     QByteArray waitForResponse(const int timeout = 1000);
