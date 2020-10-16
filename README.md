@@ -7,6 +7,8 @@ Project is written in QT5 and uses cmake, can be build in QTCreator or from comm
 
 ### Linux
 
+![Linux Build](https://github.com/kszonek/nextion-uploader/workflows/Linux%20Build/badge.svg)   
+
 ```
 $ git clone git@github.com:kszonek/nextion-uploader.git
 $ cd nextion-uploader/build
