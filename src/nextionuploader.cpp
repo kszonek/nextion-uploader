@@ -15,6 +15,16 @@ NextionUploader::NextionUploader(QString &port, qint32 baudrate, qint32 ibaudrat
 
 int NextionUploader::connectSerial()
 {
+    serial.setPortName(serialPortName);
+    serial.setBaudRate(serialInitBaudrate);
+    serial.open(QSerialPort::ReadWrite);
+    if(!serial.isOpen() || !serial.isWritable())
+    {
+        qCritical() << "Unable to open serial port" << serial.portName();
+        emit finished();
+        return -1;
+    }
+    qInfo() << "Serial port" << serialPortName << "opened with baudrate" << serialInitBaudrate;
     return 0;
 }
 
@@ -63,16 +73,6 @@ QByteArray NextionUploader::waitForResponse(const int timeout)
 void NextionUploader::run()
 {
     qDebug() << "Uploading firmware to serial port";
-    serial.setPortName(serialPortName);
-    serial.setBaudRate(serialInitBaudrate);
-    serial.open(QSerialPort::ReadWrite);
-    if(!serial.isOpen() || !serial.isWritable())
-    {
-        qCritical() << "Unable to open serial port" << serial.portName();
-        emit finished();
-        return;
-    }
-    qDebug() << "Serial port opened";
     qDebug() << "Connecting...";
     QThread::sleep(3);
     sendCommand("connect");
