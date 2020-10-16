@@ -2,8 +2,8 @@
 
 #include <QCommandLineParser>
 #include <QDebug>
-#include <QLoggingCategory>
 #include <QFile>
+#include <QLoggingCategory>
 #include <QTimer>
 
 #include "nextionuploader.hpp"
