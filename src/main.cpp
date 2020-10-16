@@ -2,6 +2,7 @@
 
 #include <QCommandLineParser>
 #include <QDebug>
+#include <QLoggingCategory>
 #include <QFile>
 #include <QTimer>
 
@@ -29,6 +30,8 @@ int main(int argc, char *argv[])
                           {{"i", "init-baudrate"},
                            QCoreApplication::translate("main", "Initial baudrate of Nextion device (if different than upload baudrate."),
                            QCoreApplication::translate("main", "baudrate")},
+                          {"verbose",
+                           QCoreApplication::translate("main", "Output debug information.")},
                       });
 
     parser.process(a);
@@ -42,6 +45,10 @@ int main(int argc, char *argv[])
     qint32 baudrate = parser.isSet("baudrate") ? parser.value("baudrate").toUInt() : 115200;
     qint32 ibaudrate = parser.isSet("init-baudrate") ? parser.value("init-baudrate").toUInt() : baudrate;
     QString firmware(parser.value("firmware"));
+    if(parser.isSet("verbose") == false)
+    {
+        QLoggingCategory::setFilterRules("*.debug=false");
+    }
 
     if(!QFile::exists(firmware))
     {
